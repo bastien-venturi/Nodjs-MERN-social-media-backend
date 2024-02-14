@@ -1,5 +1,8 @@
 # Nodjs-MERN-social-media-backend
-
+M Mongo
+E Express
+R React
+N NodJs
 
 
 
