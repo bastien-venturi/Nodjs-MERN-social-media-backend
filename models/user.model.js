@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { isEmail } = require('validator');
+const bcrypt = require('bcrypt');
 
 
 const userSchema = new mongoose.Schema({
@@ -23,7 +24,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         max: 1024,
-        minLength: 3
+        minLength: 6
     },
     picture: {
         type: String,
@@ -48,6 +49,15 @@ const userSchema = new mongoose.Schema({
 }
 );
 
+//play function before save into display: 'block',
+userSchema.pre('save', async function(next){
+    const salt = await bcrypt.genSalt();
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+});
+
+// user est le nom de la collection dans la base de données
+                                    //
 const UserModel = mongoose.model('user', userSchema);
 
 module.exports = UserModel;
