@@ -22,8 +22,8 @@ http://localhost:5000/api/user
 | /api/user/{id} | GET | Fetches a single user by its ID. |
 | /api/user/{id} | PUT | Updates an existing user by its ID. |
 | /api/user/{id} | DELETE | Deletes an user by its ID. |
-| /api/user/follow/{id} | DELETE | Add followers.(idToFollow) |
-| /api/user/unfollow/{id} | DELETE | Deletes followers.(idToUnfollow) |
+| /api/user/follow/{id} | PATCH | Add followers.(idToFollow) |
+| /api/user/unfollow/{id} | PATCH | Deletes followers.(idToUnfollow) |
 
 # Source
 
