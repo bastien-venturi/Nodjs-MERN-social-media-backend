@@ -46,8 +46,7 @@ const userSchema = new mongoose.Schema({
 },
 {
     timestamps: true
-}
-);
+});
 
 //play function before save into display: 'block',
 userSchema.pre('save', async function(next){
