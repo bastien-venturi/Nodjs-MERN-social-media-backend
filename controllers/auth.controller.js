@@ -2,6 +2,7 @@
 const UserModel = require('../models/user.Model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const { signUpErrors } = require('../utils/errors.utils');
 
 const maxAge = 3 * 24 * 60 * 60 * 1000;
 // const maxAge = "30d"; (autre façon de faire la durée de validité du token)
@@ -22,7 +23,8 @@ module.exports.signUp = async (req, res) => {
         res.status(201).json({ user: user._id });
     } 
     catch (err) {
-        res.status(400).send({ err });
+        const errors = signUpErrors(err);
+        res.status(200).send({ errors });
     }
 }
 

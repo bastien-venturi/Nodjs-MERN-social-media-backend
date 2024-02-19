@@ -4,20 +4,26 @@ const cookieParser = require('cookie-parser');
 const userRoutes = require('./routes/user.routes');
 require('dotenv').config({path: './config/.env'});
 require('./config/db');
-const {checkUser} = require('./middleware/auth.middleware');
+const {checkUser, requireAuth} = require('./middleware/auth.middleware');
 const app = express();
 
-
+//middleware 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 
-//routes
+//routes de l'application
 app.use('/api/user', userRoutes);  
 
 // jwt
+// quelque soit la route, on vérifie si l'utilisateur est connecté
 app.get('*', checkUser);
+// '/jwtid'  est la route qui permet de récupérer l'id de l'utilisateur 
+//qui restera connecté le temps de maxAge voir authController.js
+app.get('/jwtid', requireAuth, (req, res) => {
+    res.status(200).send(res.locals.user._id);
+});
 
 //server
 app.listen(process.env.PORT, () => {
