@@ -1,7 +1,7 @@
 // import UserModel from '../models/user.Model';
-const UserModel = require('../models/user.Model');
+const UserModel = require('../models/user.model');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+// const bcrypt = require('bcrypt');
 const { signUpErrors } = require('../utils/errors.utils');
 
 const maxAge = 3 * 24 * 60 * 60 * 1000;
