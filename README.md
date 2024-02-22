@@ -17,6 +17,8 @@ http://localhost:5000/api/user
 
 | Endpoint | Method | Description |
 | --- | --- | --- |
+| --- | USER | --- |
+| --- | --- | --- |
 | /api/user/register | POST | Creates a new user. |
 | /api/user/login | POST | Connection |
 | /api/user/logout | GET | Disconnection |
@@ -29,6 +31,7 @@ http://localhost:5000/api/user
 | /api/user/follow/{id} | PATCH | Add followers.(idToFollow) |
 | /api/user/unfollow/{id} | PATCH | Deletes followers.(idToUnfollow) |
 | --- | --- | --- |
+| --- | POST | --- |
 | --- | --- | --- |
 | /api/post | GET | Fetches all post. |
 | /api/post | POST | Creates a new post. |
