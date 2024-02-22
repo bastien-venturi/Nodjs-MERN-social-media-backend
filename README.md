@@ -16,6 +16,7 @@ npm start
 http://localhost:5000/api/user
 
 | Endpoint | Method | Description |
+| --- | --- | --- |
 | USER | USER | USER |
 | /api/user/register | POST | Creates a new user. |
 | /api/user/login | POST | Connection |
@@ -28,6 +29,7 @@ http://localhost:5000/api/user
 | --- | --- | --- |
 | /api/user/follow/{id} | PATCH | Add followers.(idToFollow) |
 | /api/user/unfollow/{id} | PATCH | Deletes followers.(idToUnfollow) |
+| --- | --- | --- |
 | POST | POST | POST |
 | /api/post | GET | Fetches all post. |
 | /api/post | POST | Creates a new post. |
