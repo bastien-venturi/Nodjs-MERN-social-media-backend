@@ -191,12 +191,15 @@ module.exports.editCommentPost = async (req, res) => {
         const commentIndex = post.comments.findIndex((comment) =>
             comment._id.equals(ObjectID(req.body.commentId))
         );
-
         if (commentIndex === -1) {
             return res.status(404).send('Comment not found');
         }
 
+        // Update the comment
+        post.comments[commentIndex].commenterId = req.body.commenterId;
+        post.comments[commentIndex].commenterPseudo = req.body.commenterPseudo;
         post.comments[commentIndex].text = req.body.text;
+        post.comments[commentIndex].timestamp = new Date().getTime();
 
         const updatedPost = await PostModel.findByIdAndUpdate(
             req.params.id,
@@ -213,8 +216,6 @@ module.exports.editCommentPost = async (req, res) => {
         return res.status(400).send(err);
     }
 }
-
-
 
 module.exports.deleteCommentPost = (req, res) => {
     if (!ObjectID.isValid(req.params.id))
