@@ -1,4 +1,4 @@
-const UserModel = require('../models/user.model'); // Fix casing issue
+const UserModel = require('../models/user.Model'); // Fix casing issue
 const ObjectId = require('mongoose').Types.ObjectId; // Add missing import statement
 
 module.exports.getAllUsers = async (req, res) => {
