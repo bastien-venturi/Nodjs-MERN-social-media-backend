@@ -1,6 +1,6 @@
+const ObjectID = require('mongoose').Types.ObjectId;
 const PostModel = require('../models/post.model');
 const UserModel = require('../models/user.model');
-const ObjectID = require('mongoose').Types.ObjectId;
 
 module.exports.readPost = async (req, res) => {
     try {
@@ -77,31 +77,16 @@ module.exports.likePost = async (req, res) => {
         return res.status(400).send('ID unknown : ' + req.params.id);
 
     try {
-        const updatedPost = await PostModel.findByIdAndUpdate(
-            req.params.id,
-            {
-                $addToSet: { likers: req.body.like } // changed from req.body.id to req.body.like
-            },
+
+        await PostModel.findByIdAndUpdate(
+            req.body.like,
+            { $addToSet: { likes: req.params.id } },
             { new: true }
         );
-
+        
         if (!updatedPost) {
-            throw new Error('Update error');
+            return res.status(404).send('No user found with id: ' + req.body.like);
         }
-
-        const updatedUser = await UserModel.findByIdAndUpdate(
-            req.body.like, // changed from req.body.id to req.body.like
-            {
-                $addToSet: { likes: req.params.id }
-            },
-            { new: true }
-        );
-
-        if (!updatedUser) {
-            throw new Error('Update error');
-        }
-
-        res.send({ updatedPost, updatedUser });
     } catch (err) {
         return res.status(400).send(err);
     }
@@ -179,65 +164,64 @@ module.exports.commentPost = async (req, res) => {
 
 
 module.exports.editCommentPost = async (req, res) => {
-    if (!ObjectID.isValid(req.params.id))
-        return res.status(400).send('ID unknown : ' + req.params.id);
-
     try {
-        const post = await PostModel.findById(req.params.id);
+        const postId = req.params.id;
+        if (!ObjectID.isValid(postId)) {
+            return res.status(400).send('ID unknown : ' + postId);
+        }
+
+        const post = await PostModel.findById(postId);
         if (!post) {
             return res.status(404).send('Post not found');
         }
 
+        const commentId = req.body.commentId;
+        const theComment = post.comments.find((comment) =>
+            comment._id.equals(commentId)
+        );
+
+        if (!theComment) {
+            return res.status(404).send('Comment not found');
+        }
+
+        theComment.text = req.body.text;
+
+        const updatedPost = await post.save();
+        return res.send(updatedPost);
+    } catch (err) {
+        console.log('Update error : ' + err);
+        return res.status(500).send('Internal server error');
+    }
+}
+
+module.exports.deleteCommentPost = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        if (!ObjectID.isValid(postId)) {
+            return res.status(400).send('ID unknown : ' + postId);
+        }
+
+        const post = await PostModel.findById(postId);
+        if (!post) {
+            return res.status(404).send('Post not found');
+        }
+
+        const commentId = req.body.commentId;
         const commentIndex = post.comments.findIndex((comment) =>
-            comment._id.equals(ObjectID(req.body.commentId))
+            comment._id.equals(commentId)
         );
 
         if (commentIndex === -1) {
             return res.status(404).send('Comment not found');
         }
 
-        post.comments[commentIndex].text = req.body.text;
+        post.comments.splice(commentIndex, 1);
 
-        const updatedPost = await PostModel.findByIdAndUpdate(
-            req.params.id,
-            { $set: { comments: post.comments } },
-            { new: true }
-        );
-
-        if (!updatedPost) {
-            throw new Error('Update error');
-        }
-
-        res.send(updatedPost);
+        const updatedPost = await post.save();
+        return res.send(updatedPost);
     } catch (err) {
-        return res.status(400).send(err);
-    }
-}
-
-
-
-module.exports.deleteCommentPost = (req, res) => {
-    if (!ObjectID.isValid(req.params.id))
-        return res.status(400).send('ID unknown : ' + req.params.id);
-
-    try {
-        return PostModel.findByIdAndUpdate(
-            req.params.id,
-            {
-                $pull: {
-                    comments: {
-                        _id: req.body.commentId
-                    }
-                }
-            },
-            { new: true },
-            (err, docs) => {
-                if (!err) res.send(docs);
-                else return res.status(400).send(err);
-            }
-        );
-    } catch (err) {
-        return res.status(400).send(err);
+        console.log('Delete error : ' + err);
+        return res.status(500).send('Internal server error');
     }
 }
 
